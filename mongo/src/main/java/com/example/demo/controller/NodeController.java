@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,9 +48,20 @@ public class NodeController {
 	}
 
 	@PostMapping("/create/node")
-	public Node createNode(@Validated @RequestBody Node nodes) {
+	public String createNode(@Validated @RequestBody Node details) {
+		Node nodes = new Node();
+		if(details.getId()!=null||details.isDeleteStatus()||details.isPinned()) {
+			return "Node Can't be created, Please provide proper RequestBody";
+		}
+		else {
 		nodes.setId(service.getSequenceNumber(Node.SEQUENCE_NAME));
-		return nodeRepository.save(nodes);
+		nodes.setPinned(false);
+		nodes.setDeleteStatus(false);
+		nodes.setTitle(details.getTitle());
+		nodes.setNote(details.getNote());
+		nodeRepository.save(nodes);
+		return "Node created";
+		}
 	}
 
 	@PutMapping("/edit/node/{id}")
@@ -60,7 +70,7 @@ public class NodeController {
 		Node nodes = nodeRepository.getById(nodeId);
 		if(nodes==null)
 		{
-			return "Node doesn't exist";
+			return "Node with this ID doesn't exist";
 		}
 		else
 		{
@@ -76,11 +86,11 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node doesn't exist";
+			return "Node with this ID doesn't exist";
 		}
 		else if(node.isDeleteStatus())
 		{
-			return "Node already deleted";
+			return "Node is already present in the bin";
 		}
 		else
 		{
@@ -95,17 +105,17 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node doesn't exist";
+			return "Node with this ID doesn't exist";
 		}
 		else if(node.isPinned())
 		{
-			return "Node already deleted";
+			return "Node is already pinned";
 		}
 		else
 		{
-			node.setDeleteStatus(true);
+			node.setPinned(true);
 			nodeRepository.save(node);
-			return "Node deleted";
+			return "Node pinned";
 		}
 	}
 
@@ -114,11 +124,11 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node doesn't exist";
+			return "Node with this ID doesn't exist";
 		}
 		else if(!node.isDeleteStatus())
 		{
-			return "Node already restored";
+			return "Node is not present in bin";
 		}
 		else
 		{
@@ -133,17 +143,17 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node doesn't exist";
+			return "Node with this ID doesn't exist";
 		}
-		else if(!node.isDeleteStatus())
+		else if(!node.isPinned())
 		{
-			return "Node already unpinned";
+			return "Node is already unpinned";
 		}
 		else
 		{
-			node.setDeleteStatus(true);
+			node.setPinned(false);
 			nodeRepository.save(node);
-			return "Node pinned";
+			return "Node unpinned";
 		}
 	}
 }
