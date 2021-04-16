@@ -36,29 +36,35 @@ public class NodeController {
 	public List<Node> viewDeletedNode() {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("DeleteStatus").is(true));
-		List<Node> nodes = mongo.find(query,Node.class);
+		List<Node> nodes = mongo.find(query, Node.class);
 		return nodes;
 	}
+
 	@GetMapping("/keep")
 	public List<Node> viewStoredNode() {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("DeleteStatus").is(false));
-		List<Node> nodes = mongo.find(query,Node.class);
+		List<Node> nodes = mongo.find(query, Node.class);
 		return nodes;
 	}
 
 	@PostMapping("/create/node")
 	public String createNode(@Validated @RequestBody Node details) {
 		Node nodes = new Node();
-		if(details.getId()!=null||details.isDeleteStatus()||details.isPinned()) {
-			return "Node Can't be created, Please provide proper RequestBody";
+		if(details.getId()!=null){
+			return "Node can't be created, You must not provide ID in RequestBody.";
 		}
+		else if(details.isDeleteStatus()){
+			return "Node can't be created, You must not set deleteStatus to true.";
+		}
+        else if(details.isPinned()){
+			return "Node can't be created, You must not set pinned to true.";
+		}
+        else if(details.getTitle().length()>30){
+	       return "Node can't be created, Title can have maximum 30 characters.";
+        }
 		else {
 		nodes.setId(service.getSequenceNumber(Node.SEQUENCE_NAME));
-		nodes.setPinned(false);
-		nodes.setDeleteStatus(false);
-		nodes.setTitle(details.getTitle());
-		nodes.setNote(details.getNote());
 		nodeRepository.save(nodes);
 		return "Node created";
 		}
@@ -70,14 +76,14 @@ public class NodeController {
 		Node nodes = nodeRepository.getById(nodeId);
 		if(nodes==null)
 		{
-			return "Node with this ID doesn't exist";
+			return "Node with this ID doesn't exist.";
 		}
 		else
 		{
 		nodes.setNote(details.getNote());
 		nodes.setTitle(details.getTitle());
 		nodeRepository.save(nodes);
-		return "Node Edited";
+		return "Node Edited.";
 		}
 	}
 
@@ -86,17 +92,17 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node with this ID doesn't exist";
+			return "Node with this ID doesn't exist.";
 		}
 		else if(node.isDeleteStatus())
 		{
-			return "Node is already present in the bin";
+			return "Node is already present in the bin.";
 		}
 		else
 		{
 			node.setDeleteStatus(true);
 			nodeRepository.save(node);
-			return "Node deleted";
+			return "Node deleted.";
 		}
 	}
 
@@ -105,17 +111,17 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node with this ID doesn't exist";
+			return "Node with this ID doesn't exist.";
 		}
 		else if(node.isPinned())
 		{
-			return "Node is already pinned";
+			return "Node is already pinned.";
 		}
 		else
 		{
 			node.setPinned(true);
 			nodeRepository.save(node);
-			return "Node pinned";
+			return "Node pinned.";
 		}
 	}
 
@@ -124,17 +130,17 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node with this ID doesn't exist";
+			return "Node with this ID doesn't exist.";
 		}
 		else if(!node.isDeleteStatus())
 		{
-			return "Node is not present in bin";
+			return "Node is not present in bin.";
 		}
 		else
 		{
 			node.setDeleteStatus(false);
 			nodeRepository.save(node);
-			return "Node restored";
+			return "Node restored.";
 		}
 	}
 
@@ -143,17 +149,17 @@ public class NodeController {
 		Node node=nodeRepository.getById(nodeId);
 		if(node==null)
 		{
-			return "Node with this ID doesn't exist";
+			return "Node with this ID doesn't exist.";
 		}
 		else if(!node.isPinned())
 		{
-			return "Node is already unpinned";
+			return "Node is already unpinned.";
 		}
 		else
 		{
 			node.setPinned(false);
 			nodeRepository.save(node);
-			return "Node unpinned";
+			return "Node unpinned.";
 		}
 	}
 }

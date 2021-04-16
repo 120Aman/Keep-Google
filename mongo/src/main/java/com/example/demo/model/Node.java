@@ -2,7 +2,6 @@ package com.example.demo.model;
 
 
 
-import javax.validation.constraints.Size;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -42,7 +41,7 @@ public Node(Long id, String title, String note, boolean deleteStatus, boolean pi
 	DeleteStatus = deleteStatus;
 	Pinned = pinned;
 }
-@Size(min = 0, max = 30, message = "Title can have maximum 30 characters")
+
 public String getTitle() {
 	return Title;
 }
