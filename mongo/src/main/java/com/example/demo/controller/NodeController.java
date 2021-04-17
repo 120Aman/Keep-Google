@@ -52,19 +52,21 @@ public class NodeController {
 	public String createNode(@Validated @RequestBody Node details) {
 		Node nodes = new Node();
 		if(details.getId()!=null){
-			return "Node can't be created, You must not provide ID in RequestBody.";
+			return "Node can't be created: You must not provide ID in RequestBody.";
 		}
 		else if(details.isDeleteStatus()){
-			return "Node can't be created, You must not set deleteStatus to true.";
+			return "Node can't be created: You can not create a node with deleteStatus = true.";
 		}
         else if(details.isPinned()){
-			return "Node can't be created, You must not set pinned to true.";
+			return "Node can't be created: You can not create a node with pinned = true.";
 		}
         else if(details.getTitle().length()>30){
-	       return "Node can't be created, Title can have maximum 30 characters.";
+	       return "Node can't be created: Title can have maximum 30 characters.";
         }
 		else {
 		nodes.setId(service.getSequenceNumber(Node.SEQUENCE_NAME));
+		nodes.setTitle(details.getTitle());
+		nodes.setNote(details.getNote());
 		nodeRepository.save(nodes);
 		return "Node created";
 		}
