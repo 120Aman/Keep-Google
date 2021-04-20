@@ -42,6 +42,20 @@ public Node(Long id, String title, String note, boolean deleteStatus, boolean pi
 	Pinned = pinned;
 }
 
+public Node(String title, String note, boolean deleteStatus,boolean pinned) {
+	super();
+	Title = title;
+	Note = note;
+	DeleteStatus = deleteStatus;
+	Pinned = pinned;
+}
+public Node(String title, String note) {
+	super();
+	Title = title;
+	Note = note;
+}
+
+
 public String getTitle() {
 	return Title;
 }

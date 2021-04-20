@@ -23,6 +23,10 @@ implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
+	testCompile 'junit:junit:4.12', 
+	'org.mockito:mockito-core:2.9.0', 'org.powermock:powermock-api-mockito2:1.7.0RC2',
+	'org.powermock:powermock-module-junit4:1.7.0', 'org.powermock:powermock-core:1.7.0', 'org.powermock:powermock-module-junit4-rule:1.7.0'
+	testRuntimeOnly "org.junit.platform:junit-platform-commons:1.7.0"
 }
 
 test {

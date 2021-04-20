@@ -6,16 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.model.Node;
 import com.example.demo.repository.NodeRepository;
 import com.example.demo.service.SequenceGeneratorService;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
 
 @RestController
 public class NodeController {
@@ -24,16 +29,19 @@ public class NodeController {
 	private NodeRepository nodeRepository;
 	@Autowired
 	private SequenceGeneratorService service;
+	public MongoClient mongoClient() {
+        return MongoClients.create("mongodb://localhost:27017");
+    }
 	@Autowired
-	MongoTemplate mongo;
+	MongoTemplate mongo= new MongoTemplate(mongoClient(), "test");
 
 	@GetMapping("/nodes")
-	public List<Node> getAllEmployees() {
+	public List<Node> getAllNodes() {
 		return nodeRepository.findAll();
 	}
 
 	@GetMapping("/bin")
-	public List<Node> viewDeletedNode() {
+	public  List<Node> viewDeletedNode() {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("DeleteStatus").is(true));
 		List<Node> nodes = mongo.find(query, Node.class);
@@ -67,6 +75,8 @@ public class NodeController {
 		nodes.setId(service.getSequenceNumber(Node.SEQUENCE_NAME));
 		nodes.setTitle(details.getTitle());
 		nodes.setNote(details.getNote());
+		nodes.setDeleteStatus(false);
+		nodes.setPinned(false);
 		nodeRepository.save(nodes);
 		return "Node created";
 		}
@@ -75,16 +85,16 @@ public class NodeController {
 	@PutMapping("/edit/node/{id}")
 	public String editNode(@PathVariable(value = "id") Long nodeId,
 			@Validated @RequestBody Node details) {
-		Node nodes = nodeRepository.getById(nodeId);
-		if(nodes==null)
+		Node node = nodeRepository.getById(nodeId);
+		if(node==null)
 		{
 			return "Node with this ID doesn't exist.";
 		}
 		else
 		{
-		nodes.setNote(details.getNote());
-		nodes.setTitle(details.getTitle());
-		nodeRepository.save(nodes);
+		node.setNote(details.getNote());
+		node.setTitle(details.getTitle());
+		nodeRepository.save(node);
 		return "Node Edited.";
 		}
 	}
