@@ -165,11 +165,9 @@ public class NodeControllerTest {
 		NodeList.add(mockNode2);
 		NodeList.add(mockNode3);
 		List<Node> NodeList1 = new ArrayList<>();
-		for (Node i : NodeList) {
-			if (!(i.isDeleteStatus())) {
+		for (Node i : NodeList) 
+			if (!(i.isDeleteStatus()))
 				NodeList1.add(i);
-			}
-		}
 		when(nodeController1.viewStoredNode()).thenReturn(NodeList1);
 		String expectedJson = this.mapToJson(NodeList1);
 		String URI = "/keep";
@@ -181,7 +179,6 @@ public class NodeControllerTest {
 
 	@Test
 	public void testCreateNode() throws Exception {
-
 		assertEquals("Node can't be created: You must not provide ID in RequestBody.",
 				nodeController1.createNode(new Node(1L, "wde3", "d23", false, false)));
 		assertEquals("Node can't be created: You can not create a node with deleteStatus = true.",
@@ -208,7 +205,6 @@ public class NodeControllerTest {
 
 	@Test
 	public void testDeleteNode() throws Exception {
-
 		Node mockNode = new Node();
 		mockNode.setId(1L);
 		mockNode.setTitle("acaac");
@@ -219,7 +215,6 @@ public class NodeControllerTest {
 
 		String URI2 = "/delete/node/1";
 		RequestBuilder requestBuilder2 = MockMvcRequestBuilders.put(URI2);
-
 		MvcResult result2 = mockMvc.perform(requestBuilder2).andReturn();
 		String expectedJson2 = "Node deleted.";
 		String outputInJson2 = result2.getResponse().getContentAsString();
@@ -232,10 +227,9 @@ public class NodeControllerTest {
 		mockNode2.setDeleteStatus(true);
 		mockNode2.setPinned(false);
 		Mockito.when(nodeRepository.getById(2L)).thenReturn(mockNode2);
-
+		
 		String URI1 = "/delete/node/2";
 		RequestBuilder requestBuilder1 = MockMvcRequestBuilders.put(URI1);
-
 		MvcResult result1 = mockMvc.perform(requestBuilder1).andReturn();
 		String expectedJson1 = "Node is already present in the bin.";
 		String outputInJson1 = result1.getResponse().getContentAsString();
@@ -243,17 +237,14 @@ public class NodeControllerTest {
 
 		String URI = "/delete/node/11";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put(URI);
-
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = "Node with this ID doesn't exist.";
 		String outputInJson = result.getResponse().getContentAsString();
 		assertEquals(expectedJson, outputInJson);
-
 	}
 
 	@Test
 	public void testPinNode() throws Exception {
-
 		Node mockNode = new Node();
 		mockNode.setId(1L);
 		mockNode.setTitle("acaac");
@@ -261,9 +252,9 @@ public class NodeControllerTest {
 		mockNode.setDeleteStatus(false);
 		mockNode.setPinned(false);
 		Mockito.when(nodeRepository.getById(1L)).thenReturn(mockNode);
+		
 		String URI2 = "/pin/node/1";
 		RequestBuilder requestBuilder2 = MockMvcRequestBuilders.put(URI2);
-
 		MvcResult result2 = mockMvc.perform(requestBuilder2).andReturn();
 		String expectedJson2 = "Node pinned.";
 		String outputInJson2 = result2.getResponse().getContentAsString();
@@ -271,7 +262,6 @@ public class NodeControllerTest {
 
 		String URI = "/pin/node/10";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put(URI);
-
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = "Node with this ID doesn't exist.";
 		String outputInJson = result.getResponse().getContentAsString();
@@ -287,17 +277,14 @@ public class NodeControllerTest {
 
 		String URI1 = "/pin/node/2";
 		RequestBuilder requestBuilder1 = MockMvcRequestBuilders.put(URI1);
-
 		MvcResult result1 = mockMvc.perform(requestBuilder1).andReturn();
 		String expectedJson1 = "Node is already pinned.";
 		String outputInJson1 = result1.getResponse().getContentAsString();
 		assertEquals(expectedJson1, outputInJson1);
-
 	}
 
 	@Test
 	public void testRestoreNode() throws Exception {
-
 		Node mockNode = new Node();
 		mockNode.setId(1L);
 		mockNode.setTitle("acaac");
@@ -308,7 +295,6 @@ public class NodeControllerTest {
 
 		String URI2 = "/restore/node/1";
 		RequestBuilder requestBuilder2 = MockMvcRequestBuilders.put(URI2);
-
 		MvcResult result2 = mockMvc.perform(requestBuilder2).andReturn();
 		String expectedJson2 = "Node restored.";
 		String outputInJson2 = result2.getResponse().getContentAsString();
@@ -324,7 +310,6 @@ public class NodeControllerTest {
 
 		String URI1 = "/restore/node/2";
 		RequestBuilder requestBuilder1 = MockMvcRequestBuilders.put(URI1);
-
 		MvcResult result1 = mockMvc.perform(requestBuilder1).andReturn();
 		String expectedJson1 = "Node is not present in bin.";
 		String outputInJson1 = result1.getResponse().getContentAsString();
@@ -332,7 +317,6 @@ public class NodeControllerTest {
 
 		String URI = "/unpin/node/10";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put(URI);
-
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = "Node with this ID doesn't exist.";
 		String outputInJson = result.getResponse().getContentAsString();
@@ -341,7 +325,6 @@ public class NodeControllerTest {
 
 	@Test
 	public void testUnpinNode() throws Exception {
-
 		Node mockNode = new Node();
 		mockNode.setId(1L);
 		mockNode.setTitle("acgyvuc");
@@ -352,12 +335,11 @@ public class NodeControllerTest {
 
 		String URI2 = "/unpin/node/1";
 		RequestBuilder requestBuilder2 = MockMvcRequestBuilders.put(URI2);
-
 		MvcResult result2 = mockMvc.perform(requestBuilder2).andReturn();
 		String expectedJson2 = "Node unpinned.";
 		String outputInJson2 = result2.getResponse().getContentAsString();
 		assertEquals(expectedJson2, outputInJson2);
-
+		
 		Node mockNode2 = new Node();
 		mockNode2.setId(2L);
 		mockNode2.setTitle("acaac");
@@ -368,7 +350,6 @@ public class NodeControllerTest {
 
 		String URI1 = "/unpin/node/2";
 		RequestBuilder requestBuilder1 = MockMvcRequestBuilders.put(URI1);
-
 		MvcResult result1 = mockMvc.perform(requestBuilder1).andReturn();
 		String expectedJson1 = "Node is already unpinned.";
 		String outputInJson1 = result1.getResponse().getContentAsString();
@@ -376,7 +357,6 @@ public class NodeControllerTest {
 
 		String URI = "/unpin/node/10";
 		RequestBuilder requestBuilder = MockMvcRequestBuilders.put(URI);
-
 		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
 		String expectedJson = "Node with this ID doesn't exist.";
 		String outputInJson = result.getResponse().getContentAsString();
