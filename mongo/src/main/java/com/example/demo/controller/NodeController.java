@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +30,9 @@ public class NodeController {
 	private NodeRepository nodeRepository;
 	@Autowired
 	private SequenceGeneratorService service;
-	public MongoClient mongoClient() {
-        return MongoClients.create("mongodb://localhost:27017");
-    }
+	
 	@Autowired
-	MongoTemplate mongo= new MongoTemplate(mongoClient(), "test");
+	MongoTemplate mongo;
 
 	@GetMapping("/nodes")
 	public List<Node> getAllNodes() {

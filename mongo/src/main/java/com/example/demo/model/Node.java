@@ -54,6 +54,11 @@ public Node(String title, String note) {
 	Title = title;
 	Note = note;
 }
+public Node(String title, String note,boolean bool) {
+	super();
+	Title = title;
+	Note = note;
+}
 
 
 public String getTitle() {
