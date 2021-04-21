@@ -3,7 +3,7 @@ package com.example.demo.model;
 import java.util.List;
 
 public class Date {
-	
+
 	private String date;
 	private boolean candidateStatus;
 	private List<Topics> topics;

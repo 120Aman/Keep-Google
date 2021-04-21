@@ -18,14 +18,13 @@ import com.example.demo.model.Request;
 import com.example.demo.repository.CandidateRepository;
 import com.example.demo.repository.MentorsRepository;
 
-
 @RestController
 public class SDPMentorFeedbackApiController {
 	@Autowired
 	private CandidateRepository candidateRepository;
 	@Autowired
 	private MentorsRepository mentorsRepository;
-	
+
 	@GetMapping("/")
 	public List<Candidate> getAllNodes() {
 		return candidateRepository.findAll();
@@ -70,10 +69,11 @@ public class SDPMentorFeedbackApiController {
 			return "Please provide valid details.";
 		}
 	}
+
 	@PutMapping("/Mentors/logout/{username}")
-	public String logoutMentors(@PathVariable(value="username") String userName) {
+	public String logoutMentors(@PathVariable(value = "username") String userName) {
 		Mentors mentor = mentorsRepository.getByusername(userName);
-		if(mentor!=null) {
+		if (mentor != null) {
 			mentor.setLoggedIn(false);
 			mentorsRepository.save(mentor);
 			return "Logged out.";
@@ -83,25 +83,26 @@ public class SDPMentorFeedbackApiController {
 	}
 
 	@PutMapping("/get/candidate/topics/details/{username}")
-	public String getTopicDetails(@PathVariable(value="username") String userName,@Validated @RequestBody Request request) {
-		Mentors mentor=mentorsRepository.getByusername(userName);
-		if(mentor!=null) {
-		if(mentor.isLoggedIn())
-		{
-		Candidate candidate1 = candidateRepository.getById(request.getId());
-		String date1 = request.getDate();
-		if (candidate1 != null) {
-			List<Date> dateList = candidate1.getDates();
-			for (Date date2 : dateList) {
-				if (date2.getDate().equals(date1)) {
-					return "CandidateStatus:"+date2.isCandidateStatus()+" , "+date2.getTopics().toString();
+	public String getTopicDetails(@PathVariable(value = "username") String userName,
+			@Validated @RequestBody Request request) {
+		Mentors mentor = mentorsRepository.getByusername(userName);
+		if (mentor != null) {
+			if (mentor.isLoggedIn()) {
+				Candidate candidate1 = candidateRepository.getById(request.getId());
+				String date1 = request.getDate();
+				if (candidate1 != null) {
+					List<Date> dateList = candidate1.getDates();
+					for (Date date2 : dateList) {
+						if (date2.getDate().equals(date1)) {
+							return "CandidateStatus:" + date2.isCandidateStatus() + " , "
+									+ date2.getTopics().toString();
+						}
+					}
 				}
+				return "Invalid Id.";
 			}
+			return "Please Login First.";
 		}
-			return "Invalid Id.";
-		}
-return "Please Login First.";
-	}
 		return "Username Doesn't Exist.";
-}
+	}
 }
