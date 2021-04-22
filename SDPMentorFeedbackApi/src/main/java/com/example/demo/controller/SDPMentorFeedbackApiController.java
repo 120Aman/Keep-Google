@@ -92,7 +92,6 @@ public class SDPMentorFeedbackApiController {
 				String date1 = request.getDate();
 				if (candidate1 != null) {
 					List<Date> dateList = candidate1.getDates();
-					System.out.println(dateList);
 					for (Date date2 : dateList) {
 						if (date2.getDate().equals(date1)) {
 							return "CandidateStatus:" + date2.isCandidateStatus() + " , "
